@@ -25,8 +25,6 @@ O avanço das IAs Generativas tornou a criação de mídias sintéticas extremam
 - **Integração:** REST API (Flask)
 - **Arquitetura:** Pattern MVC ou Clean Architecture (conforme o progresso do grupo).
 
-
-
 ## Como Instalar e Executar
 
 1. **Pré-requisitos:**
@@ -36,4 +34,5 @@ O avanço das IAs Generativas tornou a criação de mídias sintéticas extremam
 2. **Clonar o Repositório:**
    ```bash
    git clone [https://github.com/SEU_USUARIO/deepfakedetectorfront.git](https://github.com/SEU_USUARIO/deepfakedetectorfront.git)
-   cd deepfakedetectorfront
+   cd front_end
+   ```
