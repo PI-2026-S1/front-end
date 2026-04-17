@@ -34,5 +34,5 @@ O avanço das IAs Generativas tornou a criação de mídias sintéticas extremam
 2. **Clonar o Repositório:**
    ```bash
    git clone [https://github.com/SEU_USUARIO/deepfakedetectorfront.git](https://github.com/SEU_USUARIO/deepfakedetectorfront.git)
-   cd front_end
+   cd front-end
    ```
