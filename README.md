@@ -1,16 +1,39 @@
-# deepfakedetectorfront
+# DeepFake Detector - Front-end (Flutter)
 
-A new Flutter project.
+[![Flutter Version](https://img.shields.io/badge/Flutter-v3.x-blue.svg)](https://flutter.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Institution: IMT](https://img.shields.io/badge/Mau%C3%A1-Instituto%20de%20Tecnologia-blue)](https://maua.br)
 
-## Getting Started
+Aplicação multiplataforma desenvolvida em **Flutter** para o projeto de graduação focado na detecção de mídias sintéticas (Deepfakes). A interface comunica-se com um back-end em Python para realizar inferências de Deep Learning em tempo real.
 
-This project is a starting point for a Flutter application.
+## Sobre o Projeto
 
-A few resources to get you started if this is your first Flutter project:
+O avanço das IAs Generativas tornou a criação de mídias sintéticas extremamente realista. Este projeto visa fornecer uma ferramenta acessível para que usuários possam verificar a autenticidade de conteúdos visuais, mitigando riscos de desinformação e fraudes financeiras.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Funcionalidades
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Upload Simples:** Seleção de imagens e vídeos diretamente da galeria.
+- **Análise Inteligente:** Integração com modelos baseados em **XceptionNet** e **Vision Transformers**.
+- **Resultado Instantâneo:** Indicação clara de "Real" ou "Sintético" com score de confiança.
+- **Histórico Local:** (Em desenvolvimento) Registro de análises anteriores.
+
+## Tecnologias e Arquitetura
+
+- **Linguagem:** Dart
+- **Framework:** Flutter (Android/iOS/Web)
+- **Comunicação:** HTTP / [Dio](https://pub.dev/packages/dio)
+- **Integração:** REST API (Flask)
+- **Arquitetura:** Pattern MVC ou Clean Architecture (conforme o progresso do grupo).
+
+
+
+## Como Instalar e Executar
+
+1. **Pré-requisitos:**
+   - Possuir o Flutter SDK configurado ([Instruções](https://docs.flutter.dev/get-started/install)).
+   - Estar com o serviço de Back-end em execução.
+
+2. **Clonar o Repositório:**
+   ```bash
+   git clone [https://github.com/SEU_USUARIO/deepfakedetectorfront.git](https://github.com/SEU_USUARIO/deepfakedetectorfront.git)
+   cd deepfakedetectorfront
