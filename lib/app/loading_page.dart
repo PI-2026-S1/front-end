@@ -50,10 +50,27 @@ class _LoadingPageState extends State<LoadingPage> {
               scale: scale,
               child: Hero(
                 tag: 'logo',
-                child: Image.asset(
-                  'lib/app/assets/horizontalColored.png',
-                  width: MediaQuery.of(context).size.width * 0.8,
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.secondary.withAlpha(
+                          (255 * 0.6).toInt(),
+                        ),
+                        blurRadius: 20,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
                 ),
+                // child: Image.asset(
+                //   'lib/app/assets/horizontalColored.png',
+                //   width: MediaQuery.of(context).size.width * 0.8,
+                // ),
               ),
             );
           },
