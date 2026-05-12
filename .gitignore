@@ -13,7 +13,70 @@
 migrate_working_dir/
 
 # IntelliJ related
+*.iml# ----------------------------------------------------------------------------
+# Flutter/Dart/Pub
+# ----------------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+
+# ----------------------------------------------------------------------------
+# Android
+# ----------------------------------------------------------------------------
+android/**/generated/
+android/app/debug
+android/app/profile
+android/app/release
+android/key.properties
+*.jks
+*.keystore
+
+# ----------------------------------------------------------------------------
+# iOS/macOS
+# ----------------------------------------------------------------------------
+ios/Flutter/.last_build_id
+ios/Flutter/Ephemeral/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/ServiceDefinitions.json
+**/ios/Pods/
+**/ios/.symlinks/
+**/macos/Pods/
+**/macos/.symlinks/
+
+# ----------------------------------------------------------------------------
+# IDEs e Editores
+# ----------------------------------------------------------------------------
+# Visual Studio Code
+.vscode/
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# IntelliJ / Android Studio
+.idea/
 *.iml
+*.iws
+*.ipr
+
+# ----------------------------------------------------------------------------
+# Miscelânea e Sistema
+# ----------------------------------------------------------------------------
+.DS_Store
+*.log
+*.swp
+*~
+.history
+.env
+.env.*
+
+# ----------------------------------------------------------------------------
+# Web
+# ----------------------------------------------------------------------------
+.last_build_id
 *.ipr
 *.iws
 .idea/
