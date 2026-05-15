@@ -1,83 +1,160 @@
 import 'package:flutter/material.dart';
 
-class NavBar extends StatelessWidget {
+class NavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onItemTapped;
 
   const NavBar({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onItemTapped,
-  }) : super(key: key);
+  });
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  int _oldIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300), // Slightly faster feels more responsive
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic, // Smoother sliding curve for a background pill
+    );
+    _oldIndex = widget.currentIndex;
+  }
+
+  @override
+  void didUpdateWidget(covariant NavBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.currentIndex != widget.currentIndex) {
+      _oldIndex = oldWidget.currentIndex;
+      _controller.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final items = [
       {'icon': Icons.dashboard, 'label': 'Home'},
-      {'icon': Icons.preview, 'label': 'Review'},
       {'icon': Icons.upload, 'label': 'Upload'},
+      {'icon': Icons.preview, 'label': 'Review'},
     ];
 
+    // Calculate the horizontal position multiplier (-1.0 to 1.0 for Align)
+    double getAlignmentX(int index) {
+      // Math to convert index to a -1 to 1 scale based on item count
+      final double step = 2 / (items.length - 1);
+      return -1.0 + (step * index);
+    }
+
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.blue.shade800, width: 2),
-          bottom: BorderSide(color: Colors.purple.shade800, width: 2),
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black87,
-          border: Border(
-            left: BorderSide(color: Colors.blue.shade900, width: 3),
-            right: BorderSide(color: Colors.purple.shade900, width: 3),
+      decoration: const BoxDecoration(color: Colors.black87),
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // 1. BACKGROUND SLIDING ANIMATION
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                final double startX = getAlignmentX(_oldIndex);
+                final double endX = getAlignmentX(widget.currentIndex);
+                final double currentX = startX + (endX - startX) * _animation.value;
+
+                return Align(
+                  alignment: Alignment(currentX, 0),
+                  // FractionallySizedBox ensures the highlight perfectly matches the column width
+                  child: FractionallySizedBox(
+                    widthFactor: 1 / items.length,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.cyan.withOpacity(0.2), // Transparent highlight
+                          borderRadius: BorderRadius.circular(16), // Pill shape
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(
-            items.length,
-            (index) => GestureDetector(
-              onTap: () => onItemTapped(index),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: currentIndex == index
-                          ? [
-                              BoxShadow(
-                                color: Colors.cyan.withOpacity(0.6),
-                                blurRadius: 20,
-                                spreadRadius: 2,
-                              ),
-                            ]
-                          : [],
-                    ),
-                    child: Icon(
-                      items[index]['icon'] as IconData,
-                      color: currentIndex == index ? Colors.cyan : Colors.grey,
-                      size: 32,
+
+          // 2. FOREGROUND ICONS AND TEXT
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(
+              items.length,
+              (index) => Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque, // Ensures the whole area is clickable
+                  onTap: () => widget.onItemTapped(index),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            // Optional: Keep the subtle glow on the icon itself
+                            boxShadow: widget.currentIndex == index
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.cyan.withOpacity(0.3),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                  ]
+                                : [],
+                          ),
+                          child: Icon(
+                            items[index]['icon'] as IconData,
+                            color: widget.currentIndex == index
+                                ? Colors.cyan
+                                : Colors.grey,
+                            size: 32,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          (items[index]['label'] as String).toUpperCase(),
+                          style: TextStyle(
+                            color: widget.currentIndex == index
+                                ? Colors.cyan
+                                : Colors.grey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    (items[index]['label'] as String).toUpperCase(),
-                    style: TextStyle(
-                      color: currentIndex == index ? Colors.cyan : Colors.grey,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
