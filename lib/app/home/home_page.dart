@@ -1,4 +1,9 @@
 import 'package:deepfakedetectorfront/app/home/home_controller.dart';
+import 'package:deepfakedetectorfront/components/greeting_section.dart';
+import 'package:deepfakedetectorfront/components/recent_activity_section.dart';
+import 'package:deepfakedetectorfront/components/safe_score_card.dart';
+import 'package:deepfakedetectorfront/components/stats_row.dart';
+import 'package:deepfakedetectorfront/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -6,41 +11,66 @@ class HomePage extends StatelessWidget {
 
   const HomePage({super.key, this.controller = const HomeController()});
 
+  static const _activityItems = [
+    ActivityItem(
+      filename: 'video.mp4',
+      subtitle: 'Finalizado • Há 5 min',
+      status: 'VERIFIED',
+      statusColor: AppColors.success,
+    ),
+    ActivityItem(
+      filename: 'clip.mov',
+      subtitle: 'Processando • 88%',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 24),
-            const Text(
-              'Welcome',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'This is a generic home screen. Use the navbar to navigate.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () => controller.showPrimaryActionSnack(context),
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('Primary Action'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: () => controller.showSettingsSnack(context),
-              icon: const Icon(Icons.settings),
-              label: const Text('Settings'),
-            ),
-          ],
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 96),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const GreetingSection(),
+              const SizedBox(height: 24),
+              const SafeScoreCard(score: 0.67),
+              const SizedBox(height: 16),
+              const StatsRow(mediasScan: 1284, threats: 3),
+              const SizedBox(height: 24),
+              RecentActivitySection(
+                items: _activityItems,
+                onViewAll: () => controller.showPrimaryActionSnack(context),
+              ),
+            ],
+          ),
         ),
-      ),
+        Positioned(
+          bottom: 24,
+          right: 16,
+          child: GestureDetector(
+            onTap: () => controller.showPrimaryActionSnack(context),
+            child: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.secondary,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.secondary.withOpacity(0.4),
+                    blurRadius: 16,
+                    spreadRadius: 2,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Icon(Icons.add, color: Colors.black, size: 28),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
