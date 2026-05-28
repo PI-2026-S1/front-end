@@ -17,14 +17,21 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    const pages = [HomePage(), UploadPage(), ReviewPage()];
+    final pages = [
+      HomePage(
+        onUploadPressed: () {
+          setState(() {
+            _currentIndex = 1;
+          });
+        },
+      ),
+      const UploadPage(),
+      const ReviewPage(),
+    ];
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: pages),
       bottomNavigationBar: NavBar(
         currentIndex: _currentIndex,
         onItemTapped: (index) {

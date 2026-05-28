@@ -1,4 +1,5 @@
 import 'package:deepfakedetectorfront/app/review/review_controller.dart';
+import 'package:deepfakedetectorfront/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ReviewPage extends StatelessWidget {
@@ -12,226 +13,272 @@ class ReviewPage extends StatelessWidget {
 
     return SafeArea(
       child: Container(
-        color: Colors.black87,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(8),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.white.withAlpha(18)),
+        color: AppColors.background,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: RadialGradient(
+                      center: const Alignment(-0.8, -0.9),
+                      radius: 1,
+                      colors: [
+                        AppColors.primary.withOpacity(0.10),
+                        AppColors.background,
+                      ],
+                    ),
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Confidence Score',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          Icons.auto_graph,
-                          color: Colors.cyan.withAlpha(220),
-                          size: 28,
+              ),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground.withOpacity(0.92),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppColors.cardBorder),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.12),
+                          blurRadius: 24,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: SizedBox(
-                        width: 180,
-                        height: 180,
-                        child: Stack(
-                          alignment: Alignment.center,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
-                              width: 180,
-                              height: 180,
-                              child: CircularProgressIndicator(
-                                value: certainty,
-                                strokeWidth: 9,
-                                backgroundColor: Colors.white.withAlpha(18),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.cyan.withAlpha(220),
-                                ),
-                                strokeCap: StrokeCap.round,
+                            const Text(
+                              'Nível de Confiança',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text(
-                                  '91%',
-                                  style: TextStyle(
-                                    color: Colors.cyan,
-                                    fontSize: 44,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
+                            Icon(
+                              Icons.auto_graph,
+                              color: AppColors.primary.withOpacity(0.92),
+                              size: 28,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: SizedBox(
+                            width: 180,
+                            height: 180,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 180,
+                                  height: 180,
+                                  child: CircularProgressIndicator(
+                                    value: certainty,
+                                    strokeWidth: 9,
+                                    backgroundColor: AppColors.white
+                                        .withOpacity(0.10),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary.withOpacity(0.92),
+                                    ),
+                                    strokeCap: StrokeCap.round,
                                   ),
                                 ),
-                                SizedBox(height: 6),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Text(
+                                      '91%',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 44,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1,
+                                      ),
+                                    ),
+                                    SizedBox(height: 6),
+                                    Text(
+                                      'CERTEZA',
+                                      style: TextStyle(
+                                        color: AppColors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 2,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Artefatos gerados por IA altamente prováveis detectados nas camadas de consistência temporal e geometria facial.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.neutralLight,
+                            fontSize: 16,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.center,
+                          children: const [
+                            _InfoChip(
+                              label: 'Incompatibilidade temporal',
+                              icon: Icons.timelapse,
+                            ),
+                            _InfoChip(
+                              label: 'Distorção na geometria da face',
+                              icon: Icons.face_retouching_natural,
+                            ),
+                            _InfoChip(
+                              label: 'Detecção de artefatos',
+                              icon: Icons.blur_on,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBackground.withOpacity(0.86),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.14),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.08),
+                          blurRadius: 22,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: const Icon(
+                                Icons.movie_creation_outlined,
+                                color: AppColors.primary,
+                                size: 26,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              'Prévia',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        Container(
+                          height: 220,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.primary.withOpacity(0.14),
+                                AppColors.cardBackgroundSoft.withOpacity(0.64),
+                                AppColors.primary.withOpacity(0.08),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.16),
+                            ),
+                          ),
+                          child: const Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  color: AppColors.primary,
+                                  size: 70,
+                                ),
+                                SizedBox(height: 10),
                                 Text(
-                                  'CERTAINTY',
+                                  'Prévia de Imagem / Vídeo',
                                   style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 2,
+                                    color: AppColors.neutralLight,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Highly probable AI-generated artifacts detected in temporal consistency and facial geometry layers.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      alignment: WrapAlignment.center,
-                      children: const [
-                        _InfoChip(label: 'Temporal mismatch', icon: Icons.timelapse),
-                        _InfoChip(
-                          label: 'Face geometry drift',
-                          icon: Icons.face_retouching_natural,
-                        ),
-                        _InfoChip(label: 'Artifact detection', icon: Icons.blur_on),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.cyan.withAlpha(16),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: Colors.cyan.withAlpha(85)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.cyan.withAlpha(18),
-                      blurRadius: 20,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.cyan.withAlpha(26),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(
-                            Icons.movie_creation_outlined,
-                            color: Colors.cyan,
-                            size: 26,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(height: 12),
                         const Text(
-                          'Preview',
+                          'A prévia da mídia selecionada aparecerá aqui antes ou depois da análise.',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                            color: AppColors.neutralLight,
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: AppColors.background,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 14,
+                              horizontal: 20,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          onPressed: () =>
+                              controller.showScoreExplanationDialog(context),
+                          icon: const Icon(Icons.info_outline),
+                          label: const Text(
+                            'Por que este resultado?',
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-                    Container(
-                      height: 220,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.cyan.withAlpha(36),
-                            Colors.white.withAlpha(6),
-                            Colors.cyan.withAlpha(16),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(color: Colors.cyan.withAlpha(70)),
-                      ),
-                      child: const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.play_circle_outline,
-                              color: Colors.cyan,
-                              size: 70,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Image / Video preview',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'The selected media preview appears here before or after analysis.',
-                      style: TextStyle(color: Colors.white70, height: 1.35),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan,
-                        foregroundColor: Colors.black87,
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () => controller.showScoreExplanationDialog(context),
-                      icon: const Icon(Icons.info_outline),
-                      label: const Text(
-                        'Why this score?',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -249,19 +296,19 @@ class _InfoChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.cyan.withAlpha(16),
+        color: AppColors.primary.withOpacity(0.10),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.cyan.withAlpha(80)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.20)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: Colors.cyan),
+          Icon(icon, size: 16, color: AppColors.primary),
           const SizedBox(width: 8),
           Text(
             label,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.white,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),
