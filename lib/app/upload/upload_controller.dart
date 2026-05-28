@@ -4,8 +4,8 @@ class UploadController {
   const UploadController();
 
   void showFilePickerSnack(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('File picker opened')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Seletor de arquivos aberto')));
   }
 }
