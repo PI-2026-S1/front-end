@@ -1,3 +1,4 @@
+import 'package:deepfakedetectorfront/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ReviewController {
@@ -5,7 +6,7 @@ class ReviewController {
 
   void showReviewContentLoadedSnack(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Review content loaded')),
+      const SnackBar(content: Text('Conteúdo da análise carregado')),
     );
   }
 
@@ -14,31 +15,41 @@ class ReviewController {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          backgroundColor: AppColors.cardBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
           title: const Text(
-            'Why this score?',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            'Por que este resultado?',
+            style: TextStyle(
+              color: AppColors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'The model assigned this certainty because it detected patterns commonly associated with manipulated media:',
-                style: TextStyle(color: Colors.white70, height: 1.4),
+                'O modelo atribuiu esta certeza porque detectou padrões comumente associados a mídias manipuladas:',
+                style: TextStyle(color: AppColors.neutralLight, height: 1.4),
               ),
               SizedBox(height: 16),
-              _ReasonLine(text: 'Temporal inconsistency between frames'),
-              _ReasonLine(text: 'Lighting and shadow mismatch'),
-              _ReasonLine(text: 'Facial geometry and texture artifacts'),
-              _ReasonLine(text: 'Minor blending irregularities around edges'),
+              _ReasonLine(text: 'Inconsistência temporal entre quadros'),
+              _ReasonLine(text: 'Descompasso de iluminação e sombras'),
+              _ReasonLine(text: 'Artefatos de geometria e textura facial'),
+              _ReasonLine(
+                text: 'Irregularidades sutis de mesclagem nas bordas',
+              ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close', style: TextStyle(color: Colors.cyan)),
+              child: const Text(
+                'Fechar',
+                style: TextStyle(color: AppColors.primary),
+              ),
             ),
           ],
         );
@@ -61,13 +72,16 @@ class _ReasonLine extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 5),
-            child: Icon(Icons.circle, size: 8, color: Colors.cyan),
+            child: Icon(Icons.circle, size: 8, color: AppColors.primary),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(color: Colors.white70, height: 1.35),
+              style: const TextStyle(
+                color: AppColors.neutralLight,
+                height: 1.35,
+              ),
             ),
           ),
         ],

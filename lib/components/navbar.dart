@@ -1,3 +1,4 @@
+import 'package:deepfakedetectorfront/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatefulWidget {
@@ -24,11 +25,14 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300), // Slightly faster feels more responsive
+      duration: const Duration(
+        milliseconds: 300,
+      ), // Slightly faster feels more responsive
     );
     _animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeOutCubic, // Smoother sliding curve for a background pill
+      curve:
+          Curves.easeOutCubic, // Smoother sliding curve for a background pill
     );
     _oldIndex = widget.currentIndex;
   }
@@ -51,9 +55,9 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final items = [
-      {'icon': Icons.dashboard, 'label': 'Home'},
-      {'icon': Icons.upload, 'label': 'Upload'},
-      {'icon': Icons.preview, 'label': 'Review'},
+      {'icon': Icons.dashboard, 'label': 'INÍCIO'},
+      {'icon': Icons.upload, 'label': 'ENVIAR'},
+      {'icon': Icons.preview, 'label': 'ANÁLISE'},
     ];
 
     // Calculate the horizontal position multiplier (-1.0 to 1.0 for Align)
@@ -64,7 +68,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
     }
 
     return Container(
-      decoration: const BoxDecoration(color: Colors.black87),
+      decoration: const BoxDecoration(color: AppColors.background),
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Stack(
         alignment: Alignment.center,
@@ -76,7 +80,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
               builder: (context, child) {
                 final double startX = getAlignmentX(_oldIndex);
                 final double endX = getAlignmentX(widget.currentIndex);
-                final double currentX = startX + (endX - startX) * _animation.value;
+                final double currentX =
+                    startX + (endX - startX) * _animation.value;
 
                 return Align(
                   alignment: Alignment(currentX, 0),
@@ -87,7 +92,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.cyan.withOpacity(0.2), // Transparent highlight
+                          color: AppColors.primary.withOpacity(0.16),
                           borderRadius: BorderRadius.circular(16), // Pill shape
                         ),
                       ),
@@ -105,7 +110,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
               items.length,
               (index) => Expanded(
                 child: GestureDetector(
-                  behavior: HitTestBehavior.opaque, // Ensures the whole area is clickable
+                  behavior: HitTestBehavior
+                      .opaque, // Ensures the whole area is clickable
                   onTap: () => widget.onItemTapped(index),
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -120,7 +126,9 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                             boxShadow: widget.currentIndex == index
                                 ? [
                                     BoxShadow(
-                                      color: Colors.cyan.withOpacity(0.3),
+                                      color: AppColors.primary.withOpacity(
+                                        0.30,
+                                      ),
                                       blurRadius: 15,
                                       spreadRadius: 1,
                                     ),
@@ -130,8 +138,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                           child: Icon(
                             items[index]['icon'] as IconData,
                             color: widget.currentIndex == index
-                                ? Colors.cyan
-                                : Colors.grey,
+                                ? AppColors.primary
+                                : AppColors.neutral,
                             size: 32,
                           ),
                         ),
@@ -140,8 +148,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                           (items[index]['label'] as String).toUpperCase(),
                           style: TextStyle(
                             color: widget.currentIndex == index
-                                ? Colors.cyan
-                                : Colors.grey,
+                                ? AppColors.primary
+                                : AppColors.neutral,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
