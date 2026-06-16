@@ -1,64 +1,106 @@
+import 'package:deepfakedetectorfront/app/deepfake_controller.dart';
 import 'package:deepfakedetectorfront/components/greeting_section.dart';
 import 'package:deepfakedetectorfront/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  final DeepfakeController controller;
   final VoidCallback onUploadPressed;
 
-  const HomePage({super.key, required this.onUploadPressed});
+  const HomePage({
+    super.key,
+    required this.controller,
+    required this.onUploadPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: const BoxDecoration(color: AppColors.background),
-          child: SafeArea(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          center: const Alignment(0.8, -0.9),
-                          radius: 0.9,
-                          colors: [
-                            AppColors.primary.withOpacity(0.14),
-                            AppColors.background,
-                          ],
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final state = controller.state;
+        final result = state.result;
+
+        return Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(color: AppColors.background),
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              center: const Alignment(0.8, -0.9),
+                              radius: 0.9,
+                              colors: [
+                                AppColors.primary.withOpacity(0.14),
+                                AppColors.background,
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      GreetingSection(),
-                      SizedBox(height: 24),
-                      _LatestScanCard(
-                        score: 0.91,
-                        summary:
-                            'Artefatos gerados por IA altamente prováveis detectados nas camadas de consistência temporal e geometria facial.',
-                        timestamp: 'Última análise há 5 min',
-                        labels: ['Certeza', 'Temporal', 'Geometria facial'],
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 120),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const GreetingSection(),
+                          const SizedBox(height: 24),
+                          if (state.hasError)
+                            _StatusBanner(
+                              title: 'Problema ao sincronizar',
+                              message: state.errorMessage ?? 'Tente novamente.',
+                              icon: Icons.wifi_off,
+                              color: Colors.redAccent,
+                            ),
+                          if (state.hasError) const SizedBox(height: 16),
+                          if (result != null)
+                            _LatestScanCard.fromResult(result)
+                          else
+                            const _LatestScanCard(
+                              score: 0.0,
+                              summary:
+                                  'Nenhum resultado disponível ainda. Envie um vídeo para começar uma nova análise.',
+                              timestamp: 'Nenhuma análise executada',
+                              labels: ['Upload', 'Status', 'Resultado'],
+                              emptyState: true,
+                            ),
+                          if (state.isBusy) ...[
+                            const SizedBox(height: 16),
+                            _StatusBanner(
+                              title: state.isUploading
+                                  ? 'Enviando vídeo'
+                                  : state.isRestoring
+                                  ? 'Restaurando última análise'
+                                  : 'Atualizando resultado',
+                              message: state.isUploading
+                                  ? 'O arquivo está sendo enviado para o backend.'
+                                  : state.isRestoring
+                                  ? 'Recuperando o último job salvo localmente.'
+                                  : 'Consultando o status do job em processamento.',
+                              icon: Icons.query_stats,
+                            ),
+                          ],
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        Positioned(
-          bottom: 24,
-          right: 16,
-          child: _UploadFab(onTap: onUploadPressed),
-        ),
-      ],
+            Positioned(
+              bottom: 24,
+              right: 16,
+              child: _UploadFab(onTap: onUploadPressed),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -68,17 +110,42 @@ class _LatestScanCard extends StatelessWidget {
   final String summary;
   final String timestamp;
   final List<String> labels;
+  final bool emptyState;
 
   const _LatestScanCard({
     required this.score,
     required this.summary,
     required this.timestamp,
     required this.labels,
+    this.emptyState = false,
   });
+
+  factory _LatestScanCard.fromResult(dynamic result) {
+    final fakeProbability = result.fakeProbability ?? 0.0;
+    final labels = <String>[
+      if (result.verdict != null && result.verdict!.isNotEmpty) result.verdict!,
+      if (result.status.isNotEmpty) result.status,
+      ...result.artifacts.take(2),
+    ];
+
+    return _LatestScanCard(
+      score: fakeProbability,
+      summary: result.verdict?.isNotEmpty == true
+          ? result.verdict!
+          : 'Resultado final recebido do backend.',
+      timestamp: result.progress != null
+          ? 'Progresso atual: ${result.progress}%'
+          : 'Resultado concluído',
+      labels: labels.isEmpty ? const ['Resultado', 'Análise'] : labels,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final scorePercent = (score * 100).toInt();
+    final probability = _clampPercentage(score);
+    final effectiveSummary = summary;
+    final effectiveTimestamp = timestamp;
+    final effectiveLabels = labels;
 
     return Container(
       width: double.infinity,
@@ -144,7 +211,7 @@ class _LatestScanCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$scorePercent%',
+                      _formatPercentage(probability),
                       style: const TextStyle(
                         color: AppColors.primary,
                         fontSize: 52,
@@ -208,7 +275,7 @@ class _LatestScanCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            summary,
+            effectiveSummary,
             style: const TextStyle(
               color: AppColors.neutralLight,
               fontSize: 14,
@@ -220,12 +287,12 @@ class _LatestScanCard extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              for (final label in labels) _LatestScanTag(label: label),
+              for (final label in effectiveLabels) _LatestScanTag(label: label),
             ],
           ),
           const SizedBox(height: 14),
           Text(
-            timestamp,
+            effectiveTimestamp,
             style: const TextStyle(
               color: AppColors.neutral,
               fontSize: 12,
@@ -262,6 +329,77 @@ class _LatestScanTag extends StatelessWidget {
       ),
     );
   }
+}
+
+class _StatusBanner extends StatelessWidget {
+  final String title;
+  final String message;
+  final IconData icon;
+  final Color? color;
+
+  const _StatusBanner({
+    required this.title,
+    required this.message,
+    required this.icon,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor = color ?? AppColors.primary;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: effectiveColor.withOpacity(0.2)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: effectiveColor, size: 24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  message,
+                  style: const TextStyle(
+                    color: AppColors.neutralLight,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+double _clampPercentage(double? value) {
+  final normalized = value ?? 0.0;
+  if (normalized.isNaN || normalized.isInfinite) {
+    return 0.0;
+  }
+  return normalized.clamp(0.0, 100.0);
+}
+
+String _formatPercentage(double value) {
+  final safeValue = _clampPercentage(value);
+  final hasDecimals = safeValue.truncateToDouble() != safeValue;
+  return '${safeValue.toStringAsFixed(hasDecimals ? 1 : 0)}%';
 }
 
 class _UploadFab extends StatelessWidget {
