@@ -18,29 +18,6 @@ class GreetingSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 7,
-              height: 7,
-              decoration: const BoxDecoration(
-                color: AppColors.success,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Expanded(
-              child: Text(
-                'Sistemas operacionais. Monitoramento em tempo real ativo.',
-                style: TextStyle(
-                  color: AppColors.neutral,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
